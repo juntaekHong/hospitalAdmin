@@ -29,25 +29,26 @@ export const signUp = (hospitalData) => async (dispatch) => {
   }
 };
 
-// 병원 아이디 검색
+// 병원 주소 검색
 export const searchHospital = (content) => async (dispatch) => {
   try {
-    const jsonData = await api.get(`/search/content/${content}`);
+    const jsonData = await api.get(`/search/address?content=${content}`);
 
-    if (jsonData.success) {
-      const result = jsonData.result;
-      let hpIdList = [];
+    console.log(jsonData);
+    // if (jsonData.success) {
+    //   const result = jsonData.result;
+    //   let hpIdList = [];
 
-      await result.map((item) => {
-        hpIdList.push({
-          hpid: item._source.hpid._text,
-          address: item._source.dutyAddr._text,
-        });
-      });
+    //   await result.map((item) => {
+    //     hpIdList.push({
+    //       hpid: item._source.hpid._text,
+    //       address: item._source.dutyAddr._text,
+    //     });
+    //   });
 
-      console.log(hpIdList);
-      return hpIdList;
-    }
+    //   console.log(hpIdList);
+    //   return hpIdList;
+    // }
   } catch (e) {
     // 서버 연동 실패
     console.log("회원가입 실패...");

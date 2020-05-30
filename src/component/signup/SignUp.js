@@ -10,8 +10,13 @@ import {
   Checkbox,
   Button,
   AutoComplete,
+  notification,
 } from "antd";
-import { QuestionCircleOutlined } from "@ant-design/icons";
+import {
+  QuestionCircleOutlined,
+  InfoCircleOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
 import { SignupActions } from "../../store/actionCreator";
 import { AudioOutlined } from "@ant-design/icons";
 import { connect } from "react-redux";
@@ -95,9 +100,21 @@ const tailFormItemLayout = {
   },
 };
 
+const openNotification = () => {
+  const args = {
+    message: "가입 실패!",
+    description: "병원 주소 검색후, 해당하는 병원을 선택하여야 합니다!",
+    duration: 0,
+  };
+  notification.open(args);
+};
+
 const SignUp = (props) => {
   const [form] = Form.useForm();
   const [hpList, setHpList] = useState(props.hpIdList);
+
+  const [hospitalName, setHospitalName] = useState("");
+  const [hospitalId, setHospitalId] = useState("");
 
   const [signup, setSingup] = useState(false);
 
@@ -113,18 +130,22 @@ const SignUp = (props) => {
     // "hospitalUserPw": "127",
     // "tel": "010-1111-2222"
 
-    const hpid = "A1107301";
+    if (hospitalName !== "" && hospitalId !== "") {
+      const hpid = "A1107301";
 
-    const hospitalData = {
-      hpid: hpid,
-      email: values.email,
-      hospitalUserPw: values.password,
-      tel: values.phone,
-    };
+      const hospitalData = {
+        hpid: hpid,
+        email: values.email,
+        hospitalUserPw: values.password,
+        tel: values.phone,
+      };
 
-    const success = await SignupActions.signUp(hospitalData);
+      const success = await SignupActions.signUp(hospitalData);
 
-    await setSingup(success);
+      await setSingup(success);
+    } else {
+      await openNotification();
+    }
   };
 
   //   const prefixSelector = (
@@ -157,6 +178,10 @@ const SignUp = (props) => {
   }));
   return (
     <Form
+      style={{
+        width: "100%",
+        paddingRight: "25%",
+      }}
       {...formItemLayout}
       form={form}
       name="register"
@@ -167,6 +192,7 @@ const SignUp = (props) => {
       }}
       scrollToFirstError
     >
+      <h1 style={{ paddingLeft: "25%" }}>가입 등록</h1>
       <Form.Item
         name="email"
         label="E-mail"
@@ -252,17 +278,52 @@ const SignUp = (props) => {
       </Form.Item> */}
 
       <Form.Item
-        name="hospitalName"
-        label={<span>Hospital Name&nbsp;</span>}
+        name="hospitalAddress"
+        label={<span>Hospital Address&nbsp;</span>}
         rules={[
           {
             required: true,
-            message: "Please input your nickname!",
+            message: "Please input your Hospital Address!",
             whitespace: true,
           },
         ]}
       >
-        <Input />
+        <Search
+          placeholder="input search text"
+          enterButton="Search"
+          size="large"
+          onSearch={async (value) => {
+            console.log(value);
+            // await SignupActions.searchHospital(value);
+
+            // await setHospitalName(value);
+            // await setHospitalId(value);
+          }}
+        />
+      </Form.Item>
+
+      <Form.Item
+        label="Hospital Name"
+        rules={[
+          {
+            required: true,
+            message: "Please input your hospital address!",
+          },
+        ]}
+      >
+        <Input name="hospitalName" value={hospitalName} disabled />
+      </Form.Item>
+
+      <Form.Item
+        label="Hospital Id"
+        rules={[
+          {
+            required: true,
+            message: "Please input your hospital address!",
+          },
+        ]}
+      >
+        <Input name="HospitalId" value={hospitalId} disabled />
       </Form.Item>
 
       <Form.Item

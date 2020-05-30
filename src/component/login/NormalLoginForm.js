@@ -6,6 +6,7 @@ import "../../styles/login/NormalLoginForm.css";
 import { SigninActions } from "../../store/actionCreator";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
+import { Img } from "react-image";
 
 // 병원 리스트 호출
 const NormalLoginForm = (props) => {
@@ -19,7 +20,18 @@ const NormalLoginForm = (props) => {
   };
 
   return (
-    <div>
+    <div
+      style={{
+        paddingLeft: "35%",
+        paddingRight: "35%",
+        paddingTop: "10%",
+        paddingBottom: "10%",
+      }}
+    >
+      <img
+        style={{ width: "100px", marginBottom: "30px" }}
+        src={require("../../image/hospital.png")}
+      />
       <Form
         name="normal_login"
         className="login-form"

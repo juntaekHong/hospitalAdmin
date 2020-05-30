@@ -147,6 +147,12 @@ export const getReservationLogs = () => async (dispatch) => {
           case item.status == "REFUSED":
             status = "예약 거절";
             break;
+          case item.status == "CANCELED":
+            status = "예약 취소";
+            break;
+          default:
+            console.log(item.status);
+            break;
         }
         dataFormat.push({
           reservationIndex: item.reservationIndex,

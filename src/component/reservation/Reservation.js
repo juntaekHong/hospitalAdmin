@@ -6,12 +6,15 @@ import {
   NotificationOutlined,
 } from "@ant-design/icons";
 import "../../styles/reservation/Reservation.css";
-import { EditableTable, EditableTable2 } from "./ReservationTable";
+import {
+  EditableTable,
+  EditableTable2,
+  EditableTable3,
+} from "./ReservationTable";
 import { Redirect, Switch, Route, Link } from "react-router-dom";
 import { SigninActions, ReservationActions } from "../../store/actionCreator";
 import { removeData } from "../../utils/util";
 import { connect } from "react-redux";
-
 const { SubMenu } = Menu;
 const { Header, Content, Sider } = Layout;
 
@@ -100,10 +103,10 @@ const Reservation = (props) => {
                   <EditableTable reservationList={props.reservationList} />
                 </Route>
                 <Route path="/reservationList/nav2">
-                  <EditableTable reservationList={props.acceptedList} />
+                  <EditableTable2 reservationList={props.acceptedList} />
                 </Route>
                 <Route path="/reservationList/nav3">
-                  <EditableTable2 reservationList={props.historyList} />
+                  <EditableTable3 reservationList={props.historyList} />
                 </Route>
               </Switch>
             </Content>
