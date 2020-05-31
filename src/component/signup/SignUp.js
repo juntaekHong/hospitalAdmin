@@ -11,6 +11,7 @@ import {
   Button,
   AutoComplete,
   notification,
+  Modal,
 } from "antd";
 import {
   QuestionCircleOutlined,
@@ -100,10 +101,12 @@ const tailFormItemLayout = {
   },
 };
 
-const openNotification = () => {
+const openNotification = (message) => {
   const args = {
     message: "가입 실패!",
-    description: "병원 주소 검색후, 해당하는 병원을 선택하여야 합니다!",
+    description: message
+      ? message
+      : "병원 주소 검색후, 해당하는 병원을 선택하여야 합니다!",
     duration: 0,
   };
   notification.open(args);
@@ -113,28 +116,58 @@ const SignUp = (props) => {
   const [form] = Form.useForm();
   const [hpList, setHpList] = useState(props.hpIdList);
 
+  useEffect(() => {
+    let view = [];
+
+    if (props.hpIdList.length !== 0) {
+      const promise1 = props.hpIdList.map((item) => {
+        view.push(
+          <div>
+            <button
+              onClick={async () => {
+                await setHospitalId(item.hpid);
+                await setHospitalName(item.hospitalName);
+
+                await setModal(false);
+              }}
+            >
+              {item.hospitalName}
+            </button>
+          </div>
+        );
+      });
+
+      Promise.all([promise1]).then(async () => {
+        await setSearchResultView(view);
+      });
+    } else {
+      setSearchResultView(<div>검색 결과가 없습니다!</div>);
+    }
+  }, [props.hpIdList]);
+
+  const [searchResultView, setSearchResultView] = useState(
+    <div>검색 결과가 없습니다!</div>
+  );
+
+  const [modal, setModal] = useState(false);
+
   const [hospitalName, setHospitalName] = useState("");
   const [hospitalId, setHospitalId] = useState("");
 
   const [signup, setSingup] = useState(false);
 
-  useEffect(() => {
-    setHpList(props.hpIdList);
-  }, [props.hpIdList]);
+  const handleOk = async (e) => {
+    await setModal(false);
+  };
+
+  const handleCancel = async (e) => {
+    await setModal(false);
+  };
 
   const onFinish = async (values) => {
-    console.log("Received values of form: ", values);
-
-    // "hpid": "A1100008",
-    // "email": "koreaUnivHospital@naver.com",
-    // "hospitalUserPw": "127",
-    // "tel": "010-1111-2222"
-
     if (hospitalName !== "" && hospitalId !== "") {
-      const hpid = "A1107301";
-
       const hospitalData = {
-        hpid: hpid,
+        hpid: hospitalId,
         email: values.email,
         hospitalUserPw: values.password,
         tel: values.phone,
@@ -142,7 +175,11 @@ const SignUp = (props) => {
 
       const success = await SignupActions.signUp(hospitalData);
 
-      await setSingup(success);
+      if (success !== true) {
+        await openNotification(success);
+      } else {
+        await setSingup(success);
+      }
     } else {
       await openNotification();
     }
@@ -250,39 +287,12 @@ const SignUp = (props) => {
         <Input.Password />
       </Form.Item>
 
-      {/* <Form.Item
-        name="nickname"
-        label={
-          <span>
-            Nickname&nbsp;
-            <Tooltip title="What do you want others to call you?">
-              <QuestionCircleOutlined />
-            </Tooltip>
-          </span>
-        }
-        rules={[
-          {
-            required: true,
-            message: "Please input your nickname!",
-            whitespace: true,
-          },
-        ]}
-      >
-        <Search
-          placeholder="input search text"
-          onSearch={async (value) => {
-            await SignupActions.searchHospital(value);
-          }}
-          enterButton
-        />
-      </Form.Item> */}
-
       <Form.Item
         name="hospitalAddress"
         label={<span>Hospital Address&nbsp;</span>}
         rules={[
           {
-            required: true,
+            required: false,
             message: "Please input your Hospital Address!",
             whitespace: true,
           },
@@ -293,14 +303,24 @@ const SignUp = (props) => {
           enterButton="Search"
           size="large"
           onSearch={async (value) => {
-            console.log(value);
-            // await SignupActions.searchHospital(value);
+            await SignupActions.searchHospital(value);
+
+            await setModal(true);
 
             // await setHospitalName(value);
             // await setHospitalId(value);
           }}
         />
       </Form.Item>
+
+      <Modal
+        title="병원 주소 검색 결과"
+        visible={modal}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      >
+        {searchResultView}
+      </Modal>
 
       <Form.Item
         label="Hospital Name"

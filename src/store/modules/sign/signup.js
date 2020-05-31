@@ -22,7 +22,8 @@ export const signUp = (hospitalData) => async (dispatch) => {
     if (jsonData.success) {
       return true;
     }
-    return false;
+
+    return jsonData.result.errors[0].message;
   } catch (e) {
     // 서버 연동 실패
     console.log("회원가입 실패...");
@@ -34,21 +35,20 @@ export const searchHospital = (content) => async (dispatch) => {
   try {
     const jsonData = await api.get(`/search/address?content=${content}`);
 
-    console.log(jsonData);
-    // if (jsonData.success) {
-    //   const result = jsonData.result;
-    //   let hpIdList = [];
+    if (jsonData.success) {
+      const result = jsonData.result;
+      let hpIdList = [];
 
-    //   await result.map((item) => {
-    //     hpIdList.push({
-    //       hpid: item._source.hpid._text,
-    //       address: item._source.dutyAddr._text,
-    //     });
-    //   });
+      await result.map((item) => {
+        hpIdList.push({
+          hospitalAddress: item._source.dutyAddr._text,
+          hpid: item._source.hpid._text,
+          hospitalName: item._source.dutyName._text,
+        });
+      });
 
-    //   console.log(hpIdList);
-    //   return hpIdList;
-    // }
+      await dispatch(hpIdListAction(hpIdList));
+    }
   } catch (e) {
     // 서버 연동 실패
     console.log("회원가입 실패...");
