@@ -337,12 +337,12 @@ export const EditableTable2 = ({ reservationList }) => {
             </Popconfirm> */}
 
             <Popconfirm
-              title="정말 거절하시겠습니까?"
+              title="정말 취소하시겠습니까?"
               onConfirm={async () => {
                 await refuse(record.reservationIndex);
               }}
             >
-              <a>거절</a>
+              <a>예약 취소</a>
             </Popconfirm>
           </span>
         ) : (
