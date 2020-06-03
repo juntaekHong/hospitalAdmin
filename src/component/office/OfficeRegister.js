@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { Card, Popconfirm } from "antd";
+import { Card, Popconfirm, notification } from "antd";
 import { OfficeActions } from "../../store/actionCreator";
 import { Redirect } from "react-router-dom";
 
@@ -18,6 +18,17 @@ const OfficeRegister = (props) => {
 
   // 등록 후, 조회 페이지 이동.
   const [driection, setDirection] = useState(false);
+
+  const openNotification = (message) => {
+    const args = {
+      message: "등록 실패!",
+      description: message
+        ? message
+        : "입력하지 않았거나 추가 완료를 하지 않은 항목이 있습니다.",
+      duration: 0,
+    };
+    notification.open(args);
+  };
 
   const treatmentObjectList = () => {
     let list = [];
@@ -205,7 +216,13 @@ const OfficeRegister = (props) => {
               if (success) {
                 await OfficeActions.getOffice();
                 setDirection(true);
+              } else {
+                await openNotification(
+                  "진료실 등록에 실패하였습니다.\n잠시후, 시도해주세요."
+                );
               }
+            } else {
+              await openNotification();
             }
           }}
         >
