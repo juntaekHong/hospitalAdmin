@@ -28,18 +28,39 @@ export const getOffice = () => async (dispatch) => {
   }
 };
 
+// 진료실 정보 등록
+export const officeRegister = (officeData) => async (dispatch) => {
+  try {
+    officeData = JSON.stringify(officeData);
+
+    const token = await getData("token");
+    const jsonData = await api.post(`/office`, {
+      token,
+      body: officeData,
+    });
+
+    if (jsonData.success) {
+      return true;
+    }
+  } catch (err) {
+    console.log("error");
+    return false;
+  }
+};
+
 // 진료실 정보 수정
 export const officeDataUpdate = (officeIndex, officeData) => async (
   dispatch
 ) => {
-  officeData = JSON.stringify(officeData);
-
   try {
+    officeData = JSON.stringify(officeData);
     const token = await getData("token");
     const jsonData = await api.patch(`/office/officeIndex/${officeIndex}`, {
       token,
       body: officeData,
     });
+
+    console.log(jsonData);
 
     if (jsonData.success) {
       return true;
