@@ -13,9 +13,11 @@ import {
 } from "./ReservationTable";
 import { Redirect, Switch, Route, Link } from "react-router-dom";
 import { SigninActions, ReservationActions } from "../../store/actionCreator";
-import { removeData } from "../../utils/util";
+import { removeData, getData } from "../../utils/util";
 import { connect } from "react-redux";
 import OfficeList from "../office/OfficeList";
+import OfficeRegister from "../office/OfficeRegister";
+
 const { SubMenu } = Menu;
 const { Header, Content, Sider } = Layout;
 
@@ -24,13 +26,43 @@ const Reservation = (props) => {
     ReservationActions.getWaitingReservations();
     ReservationActions.getAcceptedReservations();
     ReservationActions.getReservationLogs();
+
+    getData("hospital").then(async (value) => {
+      await SigninActions.handleHospitalData(value);
+
+      await SigninActions.getHospital(JSON.parse(value).hpid);
+    });
   }, []);
 
   return (
     <div>
       <Layout>
         <Header className="header">
-          <div className="logo" />
+          <div className="logo">
+            {props.img ? (
+              <img
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  height: "80px",
+                  width: "80px",
+                }}
+                src={props.img}
+              />
+            ) : (
+              <img
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  height: "80px",
+                  width: "80px",
+                }}
+                src={require("../../image/hospital.png")}
+              />
+            )}
+          </div>
           <Menu theme="dark" mode="horizontal" defaultSelectedKeys={["2"]}>
             <Menu.Item key="2">관리 정보</Menu.Item>
             <Menu.Item
@@ -66,11 +98,9 @@ const Reservation = (props) => {
               </SubMenu>
               <SubMenu key="sub2" icon={<LaptopOutlined />} title="진료실">
                 <Menu.Item key="5">
-                  {" "}
                   <Link to="/reservationList/nav4">{"진료실 조회"}</Link>
                 </Menu.Item>
                 <Menu.Item key="6">
-                  {" "}
                   <Link to="/reservationList/nav5">{"진료실 등록"}</Link>
                 </Menu.Item>
               </SubMenu>
@@ -104,7 +134,7 @@ const Reservation = (props) => {
                   <OfficeList />
                 </Route>
                 <Route path="/reservationList/nav5">
-                  <div />
+                  <OfficeRegister />
                 </Route>
               </Switch>
             </Content>
@@ -118,6 +148,7 @@ const Reservation = (props) => {
 export default connect((state) => ({
   hospital: state.signin.hospital,
   access_token: state.signin.access_token,
+  img: state.signin.img,
 
   reservationList: state.reservation.reservationList,
   acceptedList: state.reservation.acceptedList,

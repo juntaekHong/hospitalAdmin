@@ -327,14 +327,14 @@ export const EditableTable2 = ({ reservationList }) => {
             >
               수락
             </a> */}
-            <Popconfirm
+            {/* <Popconfirm
               title="정말 진료 완료를 하시겠습니까?"
               onConfirm={async () => {
                 console.log(record.reservationIndex);
               }}
             >
               <a>진료 완료</a>
-            </Popconfirm>
+            </Popconfirm> */}
 
             <Popconfirm
               title="정말 거절하시겠습니까?"

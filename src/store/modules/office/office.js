@@ -20,7 +20,6 @@ export const getOffice = () => async (dispatch) => {
     });
 
     if (jsonData.success) {
-      console.log(jsonData.result);
       await dispatch(officeListAction(jsonData.result));
     }
   } catch (err) {
@@ -40,6 +39,23 @@ export const officeDataUpdate = (officeIndex, officeData) => async (
     const jsonData = await api.patch(`/office/officeIndex/${officeIndex}`, {
       token,
       body: officeData,
+    });
+
+    if (jsonData.success) {
+      return true;
+    }
+  } catch (err) {
+    console.log("error");
+    return false;
+  }
+};
+
+// 진료실 정보 삭제
+export const officeDelete = (officeIndex) => async (dispatch) => {
+  try {
+    const token = await getData("token");
+    const jsonData = await api.delete(`/office/officeIndex/${officeIndex}`, {
+      token,
     });
 
     if (jsonData.success) {

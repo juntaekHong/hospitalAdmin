@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { Card } from "antd";
+import { Card, Popconfirm } from "antd";
 import { OfficeActions } from "../../store/actionCreator";
 
 const OfficeList = (props) => {
@@ -49,59 +49,83 @@ const OfficeList = (props) => {
                 )
               }
               extra={
-                <button
-                  onClick={async () => {
-                    if (edit) {
-                      if (item.officeIndex === officeIndex) {
-                        let alterTreatmentData = [];
-                        let officeData;
+                <div>
+                  <Popconfirm
+                    title={`정말 ${
+                      edit && officeIndex === item.officeIndex ? "완료" : "수정"
+                    }하시겠습니까?`}
+                    onConfirm={async () => {
+                      if (edit) {
+                        if (item.officeIndex === officeIndex) {
+                          let alterTreatmentData = [];
+                          let officeData;
 
-                        await item.treatment.map((beforeData) => {
-                          treatmentList.findIndex((i) => {
-                            i.treatmentIndex === beforeData.treatmentIndex &&
-                            i.treatmentName !== beforeData.treatmentName
-                              ? alterTreatmentData.push([
-                                  beforeData.treatmentName,
-                                  i.treatmentName,
-                                ])
-                              : console.log();
+                          await item.treatment.map((beforeData) => {
+                            treatmentList.findIndex((i) => {
+                              i.treatmentIndex === beforeData.treatmentIndex &&
+                              i.treatmentName !== beforeData.treatmentName
+                                ? alterTreatmentData.push([
+                                    beforeData.treatmentName,
+                                    i.treatmentName,
+                                  ])
+                                : console.log();
+                            });
                           });
-                        });
 
-                        if (alterTreatmentData.length !== 0) {
-                          officeData = {
-                            alterOfficeName: officeName,
-                            alterTreatmentName: alterTreatmentData,
-                          };
-                        } else {
-                          officeData = {
-                            alterOfficeName: officeName,
-                          };
+                          if (alterTreatmentData.length !== 0) {
+                            officeData = {
+                              alterOfficeName: officeName,
+                              alterTreatmentName: alterTreatmentData,
+                            };
+                          } else {
+                            officeData = {
+                              alterOfficeName: officeName,
+                            };
+                          }
+
+                          const success = await OfficeActions.officeDataUpdate(
+                            officeIndex,
+                            officeData
+                          );
+
+                          if (success) {
+                            await OfficeActions.getOffice();
+                          }
                         }
 
-                        const success = await OfficeActions.officeDataUpdate(
-                          officeIndex,
-                          officeData
-                        );
-
-                        if (success) {
-                          await OfficeActions.getOffice();
-                        }
+                        await setOfficeIndex();
+                        await setOfficeName("");
+                        await setTreatmentList([]);
                       }
 
-                      await setOfficeIndex();
-                      await setOfficeName("");
-                      await setTreatmentList([]);
-                    }
+                      await setOfficeIndex(item.officeIndex);
+                      await setOfficeName(item.officeName);
+                      await setTreatmentList(item.treatment);
+                      await setEdit(!edit);
+                    }}
+                  >
+                    <a>
+                      {edit && officeIndex === item.officeIndex
+                        ? "완료"
+                        : "수정"}
+                    </a>
+                  </Popconfirm>
+                  <span> </span>
+                  <Popconfirm
+                    title="정말 삭제하시겠습니까?"
+                    onConfirm={async () => {
+                      const success = await OfficeActions.officeDelete(
+                        item.officeIndex
+                      );
 
-                    await setOfficeIndex(item.officeIndex);
-                    await setOfficeName(item.officeName);
-                    await setTreatmentList(item.treatment);
-                    await setEdit(!edit);
-                  }}
-                >
-                  {edit && officeIndex === item.officeIndex ? "완료" : "수정"}
-                </button>
+                      if (success) {
+                        await OfficeActions.getOffice();
+                      }
+                    }}
+                  >
+                    <a>삭제</a>
+                  </Popconfirm>
+                </div>
               }
               style={{
                 width: 300,
@@ -149,7 +173,7 @@ const OfficeList = (props) => {
 
   return <div>{officeListView()}</div>;
 };
+
 export default connect((state) => ({
-  hospital: state.signin.hospital,
   officeList: state.office.officeList,
 }))(OfficeList);
