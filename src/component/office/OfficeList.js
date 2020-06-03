@@ -26,7 +26,7 @@ import { OfficeActions } from "../../store/actionCreator";
 
 const OfficeList = (props) => {
   useEffect(() => {
-    OfficeActions.getOffice(props.hospital.hpid);
+    OfficeActions.getOffice();
   }, []);
 
   return (

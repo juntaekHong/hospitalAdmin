@@ -3,24 +3,25 @@ import { produce } from "immer";
 import api from "../../../utils/api";
 import { getData } from "../../../utils/util";
 
-// const HISTORY_LIST = "signin/HISTORY_LIST";
+const OFFICE_LIST = "office/OFFICE_LIST";
 
-// const reservationListAction = createAction(RESERVATION_LIST);
+const officeListAction = createAction(OFFICE_LIST);
 
-const initState = {};
+const initState = {
+  officeList: [],
+};
 
 // 진료실 조회
-export const getOffice = (hpid) => async (dispatch) => {
+export const getOffice = () => async (dispatch) => {
   try {
     const token = await getData("token");
-    const jsonData = await api.get(`/office/hpid/${hpid}`, {
+    const jsonData = await api.get(`/office`, {
       token,
     });
 
-    console.log(jsonData);
-
     if (jsonData.success) {
-      //   console.log(jsonData);
+      console.log(jsonData.result);
+      await dispatch(officeListAction(jsonData.result));
     }
   } catch (err) {
     console.log("error");
@@ -30,10 +31,10 @@ export const getOffice = (hpid) => async (dispatch) => {
 
 export default handleActions(
   {
-    // [RESERVATION_LIST]: (state, { payload }) =>
-    //   produce(state, (draft) => {
-    //     draft.reservationList = payload;
-    //   }),
+    [OFFICE_LIST]: (state, { payload }) =>
+      produce(state, (draft) => {
+        draft.officeList = payload;
+      }),
   },
   initState
 );

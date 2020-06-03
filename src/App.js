@@ -8,8 +8,20 @@ import { getData } from "./utils/util";
 import Reservation from "./component/reservation/Reservation";
 import SignUp from "./component/signup/SignUp";
 import { NoMatch } from "./component/NoMatch";
+import { SigninActions } from "./store/actionCreator";
 
 const App = (props) => {
+  useEffect(() => {
+    const token = getData("token");
+
+    Promise.all([token]).then(() => {
+      token.then(async (value) => {
+        if (value !== null) {
+          await SigninActions.handleSinginInit(token);
+        }
+      });
+    });
+  }, []);
   return (
     <div className="App">
       {/* {firstPage ? (
