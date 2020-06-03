@@ -13,6 +13,24 @@ const OfficeList = (props) => {
     OfficeActions.getOffice();
   }, []);
 
+  useEffect(() => {
+    let treatmentData = [];
+    if (edit) {
+      props.officeList.map((item, index) => {
+        if (item.officeIndex === officeIndex) {
+          props.officeList[index].treatment.map((treatData) => {
+            treatmentData.push({
+              treatmentIndex: treatData.treatmentIndex,
+              treatmentName: treatData.treatmentName,
+            });
+          });
+        }
+      });
+
+      setTreatmentList(treatmentData);
+    }
+  }, [edit]);
+
   const officeListView = () => {
     return props.officeList.length !== 0
       ? props.officeList.map((item, index) => {
@@ -21,7 +39,6 @@ const OfficeList = (props) => {
               title={
                 edit && officeIndex === item.officeIndex ? (
                   <input
-                    name={"officeName"}
                     value={officeName}
                     onChange={async (e) => {
                       await setOfficeName(e.target.value);
@@ -36,9 +53,31 @@ const OfficeList = (props) => {
                   onClick={async () => {
                     if (edit) {
                       if (item.officeIndex === officeIndex) {
-                        const officeData = {
-                          alterOfficeName: officeName,
-                        };
+                        let alterTreatmentData = [];
+                        let officeData;
+
+                        await item.treatment.map((beforeData) => {
+                          treatmentList.findIndex((i) => {
+                            i.treatmentIndex === beforeData.treatmentIndex &&
+                            i.treatmentName !== beforeData.treatmentName
+                              ? alterTreatmentData.push([
+                                  beforeData.treatmentName,
+                                  i.treatmentName,
+                                ])
+                              : console.log();
+                          });
+                        });
+
+                        if (alterTreatmentData.length !== 0) {
+                          officeData = {
+                            alterOfficeName: officeName,
+                            alterTreatmentName: alterTreatmentData,
+                          };
+                        } else {
+                          officeData = {
+                            alterOfficeName: officeName,
+                          };
+                        }
 
                         const success = await OfficeActions.officeDataUpdate(
                           officeIndex,
@@ -50,9 +89,9 @@ const OfficeList = (props) => {
                         }
                       }
 
-                      setOfficeIndex();
-                      setOfficeName("");
-                      setTreatmentList([]);
+                      await setOfficeIndex();
+                      await setOfficeName("");
+                      await setTreatmentList([]);
                     }
 
                     await setOfficeIndex(item.officeIndex);
@@ -72,19 +111,36 @@ const OfficeList = (props) => {
                 verticalAlign: "top",
               }}
             >
-              {item.treatment.map((treatment, index) => {
-                return edit && officeIndex === item.officeIndex ? (
-                  <p>
-                    <input
-                      name={"treament"}
-                      value={treatment.treatmentName}
-                      onChange={async (e) => {}}
-                    />
-                  </p>
-                ) : (
-                  <p>{treatment.treatmentName}</p>
-                );
-              })}
+              {edit && officeIndex === item.officeIndex
+                ? treatmentList.map((treatment) => {
+                    return (
+                      <p>
+                        <input
+                          value={treatment.treatmentName}
+                          onChange={(e) => {
+                            let changeDataList = [];
+                            treatmentList.map((changeData) => {
+                              if (
+                                changeData.treatmentIndex ===
+                                treatment.treatmentIndex
+                              ) {
+                                changeDataList.push({
+                                  treatmentIndex: treatment.treatmentIndex,
+                                  treatmentName: e.target.value,
+                                });
+                              } else {
+                                changeDataList.push(changeData);
+                              }
+                            });
+                            setTreatmentList(changeDataList);
+                          }}
+                        />
+                      </p>
+                    );
+                  })
+                : item.treatment.map((treatment, index) => {
+                    return <p>{treatment.treatmentName}</p>;
+                  })}
             </Card>
           );
         })
