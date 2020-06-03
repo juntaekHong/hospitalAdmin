@@ -24,12 +24,12 @@ const NormalLoginForm = (props) => {
       style={{
         paddingLeft: "35%",
         paddingRight: "35%",
-        paddingTop: "10%",
+        paddingTop: "5%",
         paddingBottom: "10%",
       }}
     >
       <img
-        style={{ width: "100px", marginBottom: "30px" }}
+        style={{ width: "200px" }}
         src={require("../../image/hospital.png")}
       />
       <Form

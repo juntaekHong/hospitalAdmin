@@ -8,26 +8,42 @@ const OfficeList = (props) => {
     OfficeActions.getOffice();
   }, []);
 
-  return (
-    <div>
-      {props.officeList.length !== 0
-        ? props.officeList.map((item) => {
-            return (
-              <Card
-                title="진료 정보"
-                extra={<a href="#">수정</a>}
-                style={{ width: 300 }}
-              >
-                <p>{item.officeName}</p>
-                {item.treatment.map((treatment) => {
-                  return <p>{treatment.treatmentName}</p>;
-                })}
-              </Card>
-            );
-          })
-        : null}
-    </div>
-  );
+  const officeListView = () => {
+    return props.officeList.length !== 0
+      ? props.officeList.map((item, index) => {
+          return (
+            <Card
+              title={item.officeName}
+              extra={<a href="#">수정</a>}
+              style={
+                index === props.officeList.length - 1 && index % 2 === 1
+                  ? {
+                      width: 300,
+                      display: "inline-block",
+                      marginRight: 30,
+                      marginBottom: 30,
+                      verticalAlign: "top",
+                      float: "left",
+                    }
+                  : {
+                      width: 300,
+                      display: "inline-block",
+                      marginRight: 30,
+                      marginBottom: 30,
+                      verticalAlign: "top",
+                    }
+              }
+            >
+              {item.treatment.map((treatment) => {
+                return <p>{treatment.treatmentName}</p>;
+              })}
+            </Card>
+          );
+        })
+      : null;
+  };
+
+  return <div>{officeListView()}</div>;
 };
 export default connect((state) => ({
   hospital: state.signin.hospital,
