@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { Card, Popconfirm, notification } from "antd";
+import { Card, Popconfirm, notification, Button } from "antd";
+import {
+  PlusCircleTwoTone,
+  CheckCircleTwoTone,
+  EditTwoTone,
+} from "@ant-design/icons";
 import { OfficeActions } from "../../store/actionCreator";
 import { Redirect } from "react-router-dom";
 
@@ -96,13 +101,22 @@ const OfficeRegister = (props) => {
           type="inner"
           title="담당의"
           extra={
-            <button
+            <Button
+              type={"link"}
+              icon={
+                !inputText ? (
+                  <PlusCircleTwoTone style={{ fontSize: "20px" }} />
+                ) : (
+                  <CheckCircleTwoTone
+                    twoToneColor={"#52c41a"}
+                    style={{ fontSize: "20px" }}
+                  />
+                )
+              }
               onClick={async () => {
                 await setInputText(!inputText);
               }}
-            >
-              {!inputText ? "추가" : "확인"}
-            </button>
+            />
           }
         >
           {inputText ? (
@@ -129,13 +143,22 @@ const OfficeRegister = (props) => {
           type="inner"
           title="진료실"
           extra={
-            <button
+            <Button
+              type="link"
+              icon={
+                !inputText2 ? (
+                  <PlusCircleTwoTone style={{ fontSize: "20px" }} />
+                ) : (
+                  <CheckCircleTwoTone
+                    twoToneColor={"#52c41a"}
+                    style={{ fontSize: "20px" }}
+                  />
+                )
+              }
               onClick={async () => {
                 await setInputText2(!inputText2);
               }}
-            >
-              {!inputText2 ? "추가" : "확인"}
-            </button>
+            />
           }
         >
           {inputText2 ? (
@@ -163,34 +186,40 @@ const OfficeRegister = (props) => {
           title="진료 항목"
           extra={
             inputText3 ? (
-              <button
+              <Button
+                type="link"
+                icon={<EditTwoTone style={{ fontSize: "20px" }} />}
                 onClick={async () => {
                   await setInputText3(!inputText3);
                 }}
-              >
-                수정
-              </button>
+              />
             ) : (
               <div>
-                <button
+                <Button
+                  type="link"
+                  icon={<PlusCircleTwoTone style={{ fontSize: "20px" }} />}
                   onClick={async () => {
                     await setTreatmentList([
                       ...treatmentList,
                       { treatment: "" },
                     ]);
                   }}
-                >
-                  추가
-                </button>
+                />
+
                 <span> </span>
                 {treatmentList.length !== 0 ? (
-                  <button
+                  <Button
+                    type="link"
+                    icon={
+                      <CheckCircleTwoTone
+                        twoToneColor={"#52c41a"}
+                        style={{ fontSize: "20px" }}
+                      />
+                    }
                     onClick={async () => {
                       await setInputText3(true);
                     }}
-                  >
-                    완료
-                  </button>
+                  />
                 ) : null}
               </div>
             )
@@ -238,7 +267,13 @@ const OfficeRegister = (props) => {
             }
           }}
         >
-          {!driection ? <a>등록</a> : <Redirect to={"nav4"} />}
+          {!driection ? (
+            <Button type="primary" shape="round">
+              등록
+            </Button>
+          ) : (
+            <Redirect to={"nav4"} />
+          )}
         </Popconfirm>
       </div>
     </Card>

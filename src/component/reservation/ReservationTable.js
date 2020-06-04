@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Table, Input, InputNumber, Popconfirm, Form } from "antd";
+import { Table, Input, InputNumber, Popconfirm, Form, Button } from "antd";
 import "../../styles/reservation/ReservationTable.css";
 import { ReservationActions } from "../../store/actionCreator";
+import { CheckCircleTwoTone, MinusCircleTwoTone } from "@ant-design/icons";
 
 const originData = [];
 
@@ -159,21 +160,27 @@ export const EditableTable = ({ reservationList }) => {
               수락
             </a> */}
             <Popconfirm
-              title="정말 수락하시겠습니까?"
+              title="정말 예약 수락하시겠습니까?"
               onConfirm={async () => {
                 await accept(record.reservationIndex);
               }}
             >
-              <a>수락 </a>
+              <Button
+                type="link"
+                icon={<CheckCircleTwoTone twoToneColor={"#52c41a"} />}
+              />
             </Popconfirm>
 
             <Popconfirm
-              title="정말 거절하시겠습니까?"
+              title="정말 예약 거절하시겠습니까?"
               onConfirm={async () => {
                 await refuse(record.reservationIndex);
               }}
             >
-              <a>거절</a>
+              <Button
+                type="link"
+                icon={<MinusCircleTwoTone twoToneColor={"#dc3545"} />}
+              />
             </Popconfirm>
           </span>
         ) : (
@@ -337,12 +344,15 @@ export const EditableTable2 = ({ reservationList }) => {
             </Popconfirm> */}
 
             <Popconfirm
-              title="정말 취소하시겠습니까?"
+              title="정말 예약 취소하시겠습니까?"
               onConfirm={async () => {
                 await refuse(record.reservationIndex);
               }}
             >
-              <a>예약 취소</a>
+              <Button
+                type="link"
+                icon={<MinusCircleTwoTone twoToneColor={"#dc3545"} />}
+              />
             </Popconfirm>
           </span>
         ) : (
@@ -491,7 +501,10 @@ export const EditableTable3 = ({ reservationList }) => {
                 await historyDelete(record.reservationIndex);
               }}
             >
-              <a>삭제</a>
+              <Button
+                type="link"
+                icon={<MinusCircleTwoTone twoToneColor={"#dc3545"} />}
+              />
             </Popconfirm>
           </span>
         ) : (

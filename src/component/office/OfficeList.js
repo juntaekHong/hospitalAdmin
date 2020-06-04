@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { Card, Popconfirm, notification } from "antd";
+import { Card, Popconfirm, notification, Button } from "antd";
 import { OfficeActions } from "../../store/actionCreator";
+import {
+  PlusCircleTwoTone,
+  CheckCircleTwoTone,
+  EditTwoTone,
+  MinusCircleTwoTone,
+} from "@ant-design/icons";
 
 const OfficeList = (props) => {
   const [edit, setEdit] = useState(false);
@@ -135,12 +141,16 @@ const OfficeList = (props) => {
                     }}
                   >
                     <a>
-                      {edit && officeIndex === item.officeIndex
-                        ? "완료"
-                        : "수정"}
+                      {edit && officeIndex === item.officeIndex ? (
+                        <Button
+                          type="link"
+                          icon={<CheckCircleTwoTone twoToneColor={"#52c41a"} />}
+                        />
+                      ) : (
+                        <Button type="link" icon={<EditTwoTone />} />
+                      )}
                     </a>
                   </Popconfirm>
-                  <span> </span>
                   <Popconfirm
                     title="정말 삭제하시겠습니까?"
                     onConfirm={async () => {
@@ -162,7 +172,10 @@ const OfficeList = (props) => {
                       }
                     }}
                   >
-                    <a>삭제</a>
+                    <Button
+                      type="link"
+                      icon={<MinusCircleTwoTone twoToneColor={"#dc3545"} />}
+                    />
                   </Popconfirm>
                 </div>
               }
@@ -198,8 +211,9 @@ const OfficeList = (props) => {
                             setTreatmentList(changeDataList);
                           }}
                         />
-                        <span> </span>
-                        <button
+                        <Button
+                          type="link"
+                          icon={<MinusCircleTwoTone twoToneColor={"#dc3545"} />}
                           onClick={async () => {
                             await setDeleteTreatmentIndex([
                               ...deleteTreatmentIndex,
@@ -222,9 +236,7 @@ const OfficeList = (props) => {
 
                             await setTreatmentList(changeList);
                           }}
-                        >
-                          삭제
-                        </button>
+                        />
                       </p>
                     );
                   })
