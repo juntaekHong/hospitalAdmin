@@ -8,21 +8,18 @@ function rest(method) {
     try {
       let response;
       if (method === "GET") {
-        response = await axios.get(
-          `http://ec2-15-164-221-39.ap-northeast-2.compute.amazonaws.com${url}`,
-          {
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-              "x-access-token": token,
-              ...header,
-            },
-          }
-        );
+        response = await axios.get(`https://ppodeum.site${url}`, {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "x-access-token": token,
+            ...header,
+          },
+        });
       } else {
         response = await axios({
           method: method,
-          url: `http://ec2-15-164-221-39.ap-northeast-2.compute.amazonaws.com${url}`,
+          url: `https://ppodeum.site${url}`,
           data: body,
           headers: {
             Accept: "application/json",
