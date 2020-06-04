@@ -30,6 +30,17 @@ const OfficeRegister = (props) => {
     notification.open(args);
   };
 
+  const openNotification2 = (message) => {
+    const args = {
+      message: "등록 완료!",
+      description: message
+        ? message
+        : "정상적으로 진료실 등록이 완료되었습니다.",
+      duration: 0,
+    };
+    notification.open(args);
+  };
+
   const treatmentObjectList = () => {
     let list = [];
     let datas = [];
@@ -215,6 +226,7 @@ const OfficeRegister = (props) => {
 
               if (success) {
                 await OfficeActions.getOffice();
+                await openNotification2();
                 setDirection(true);
               } else {
                 await openNotification(
