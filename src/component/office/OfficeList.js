@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { Card, Popconfirm } from "antd";
+import { Card, Popconfirm, notification } from "antd";
 import { OfficeActions } from "../../store/actionCreator";
 
 const OfficeList = (props) => {
@@ -30,6 +30,17 @@ const OfficeList = (props) => {
       setTreatmentList(treatmentData);
     }
   }, [edit]);
+
+  const openNotification = (title, message) => {
+    const args = {
+      message: title,
+      description: message
+        ? message
+        : "입력하지 않았거나 수정 완료를 하지 않은 항목이 있습니다.",
+      duration: 0,
+    };
+    notification.open(args);
+  };
 
   const officeListView = () => {
     return props.officeList.length !== 0
@@ -90,6 +101,15 @@ const OfficeList = (props) => {
 
                           if (success) {
                             await OfficeActions.getOffice();
+                            await openNotification(
+                              "수정 완료!",
+                              "정상적으로 진료실 정보를 수정하였습니다."
+                            );
+                          } else {
+                            await openNotification(
+                              "수정 실패!",
+                              "다시 시도해 주세요."
+                            );
                           }
                         }
 
@@ -120,6 +140,15 @@ const OfficeList = (props) => {
 
                       if (success) {
                         await OfficeActions.getOffice();
+                        await openNotification(
+                          "삭제 완료!",
+                          "정상적으로 진료실 정보를 삭제하였습니다!"
+                        );
+                      } else {
+                        await openNotification(
+                          "삭제 실패!",
+                          "다시 시도해 주세요."
+                        );
                       }
                     }}
                   >
