@@ -8,6 +8,7 @@ const OfficeList = (props) => {
   const [officeIndex, setOfficeIndex] = useState();
   const [officeName, setOfficeName] = useState("");
   const [treatmentList, setTreatmentList] = useState([]);
+  const [deleteTreatmentIndex, setDeleteTreatmentIndex] = useState([]);
 
   useEffect(() => {
     OfficeActions.getOffice();
@@ -94,6 +95,14 @@ const OfficeList = (props) => {
                             };
                           }
 
+                          await deleteTreatmentIndex.map(
+                            async (treatmentIndex) => {
+                              await OfficeActions.treatmentDelete(
+                                treatmentIndex
+                              );
+                            }
+                          );
+
                           const success = await OfficeActions.officeDataUpdate(
                             officeIndex,
                             officeData
@@ -116,6 +125,7 @@ const OfficeList = (props) => {
                         await setOfficeIndex();
                         await setOfficeName("");
                         await setTreatmentList([]);
+                        await setDeleteTreatmentIndex([]);
                       }
 
                       await setOfficeIndex(item.officeIndex);
@@ -188,6 +198,33 @@ const OfficeList = (props) => {
                             setTreatmentList(changeDataList);
                           }}
                         />
+                        <span> </span>
+                        <button
+                          onClick={async () => {
+                            await setDeleteTreatmentIndex([
+                              ...deleteTreatmentIndex,
+                              treatment.treatmentIndex,
+                            ]);
+
+                            const deleteIndex = await treatmentList.findIndex(
+                              (i) =>
+                                i.treatmentIndex === treatment.treatmentIndex
+                            );
+
+                            let changeList = [];
+
+                            await treatmentList.map((item, index) => {
+                              if (index !== deleteIndex) {
+                                changeList.push(item);
+                              } else {
+                              }
+                            });
+
+                            await setTreatmentList(changeList);
+                          }}
+                        >
+                          삭제
+                        </button>
                       </p>
                     );
                   })
