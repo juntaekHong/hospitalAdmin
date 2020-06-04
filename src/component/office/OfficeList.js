@@ -3,18 +3,25 @@ import { connect } from "react-redux";
 import { Card, Popconfirm, notification, Button } from "antd";
 import { OfficeActions } from "../../store/actionCreator";
 import {
-  PlusCircleTwoTone,
+  PlusOutlined,
   CheckCircleTwoTone,
   EditTwoTone,
   MinusCircleTwoTone,
 } from "@ant-design/icons";
 
 const OfficeList = (props) => {
+  // 편집모드
   const [edit, setEdit] = useState(false);
+  // 진료실 인덱스
   const [officeIndex, setOfficeIndex] = useState();
+  // 진료실 이름(담당의 이름 포함)
   const [officeName, setOfficeName] = useState("");
+  // 진료항목 리스트
   const [treatmentList, setTreatmentList] = useState([]);
+  // 삭제할 진료항목 인덱스
   const [deleteTreatmentIndex, setDeleteTreatmentIndex] = useState([]);
+  // 진료항목 추가 리스트
+  const [addTreatmentList, setAddTreatmentList] = useState([]);
 
   useEffect(() => {
     OfficeActions.getOffice();
@@ -49,6 +56,59 @@ const OfficeList = (props) => {
     notification.open(args);
   };
 
+  const onChanged = (data, searchIndex, value) => {
+    let datas = [];
+
+    data.map((item, index) => {
+      if (index === searchIndex) {
+        datas.push({ treatment: value });
+      } else {
+        datas.push(item);
+      }
+    });
+
+    setAddTreatmentList(datas);
+  };
+
+  const onClicked = (data, index) => {
+    let currentList = [];
+    data.map((item, cancelIndex) => {
+      if (index === cancelIndex) {
+      } else {
+        currentList.push(item);
+      }
+    });
+
+    setAddTreatmentList(currentList);
+  };
+
+  const addTreatmentView = () => {
+    let list = [];
+    let data = addTreatmentList;
+
+    addTreatmentList.map((item, index) => {
+      list.push(
+        <p>
+          <input
+            value={addTreatmentList[index].treatment}
+            onChange={async (e) => {
+              onChanged(data, index, e.target.value);
+            }}
+          />
+          <Button
+            type="link"
+            icon={<MinusCircleTwoTone twoToneColor={"#dc3545"} />}
+            onClick={() => {
+              onClicked(data, index);
+            }}
+          />
+        </p>
+      );
+    });
+
+    return list;
+  };
+
   const officeListView = () => {
     return props.officeList.length !== 0
       ? props.officeList.map((item, index) => {
@@ -77,6 +137,7 @@ const OfficeList = (props) => {
                         if (item.officeIndex === officeIndex) {
                           let alterTreatmentData = [];
                           let officeData;
+                          let newTreat = [];
 
                           await item.treatment.map((beforeData) => {
                             treatmentList.findIndex((i) => {
@@ -90,14 +151,30 @@ const OfficeList = (props) => {
                             });
                           });
 
-                          if (alterTreatmentData.length !== 0) {
+                          await addTreatmentList.map((item) => {
+                            if (item.treatment !== "") {
+                              newTreat.push(item.treatment);
+                            }
+                          });
+
+                          if (
+                            alterTreatmentData.length !== 0 &&
+                            newTreat.length !== 0
+                          ) {
+                            officeData = {
+                              alterOfficeName: officeName,
+                              alterTreatmentName: alterTreatmentData,
+                              newTreatmentNameArr: newTreat,
+                            };
+                          } else if (alterTreatmentData.length !== 0) {
                             officeData = {
                               alterOfficeName: officeName,
                               alterTreatmentName: alterTreatmentData,
                             };
-                          } else {
+                          } else if (newTreat.length !== 0) {
                             officeData = {
                               alterOfficeName: officeName,
+                              newTreatmentNameArr: newTreat,
                             };
                           }
 
@@ -137,6 +214,7 @@ const OfficeList = (props) => {
                       await setOfficeIndex(item.officeIndex);
                       await setOfficeName(item.officeName);
                       await setTreatmentList(item.treatment);
+                      await setAddTreatmentList([]);
                       await setEdit(!edit);
                     }}
                   >
@@ -243,6 +321,29 @@ const OfficeList = (props) => {
                 : item.treatment.map((treatment, index) => {
                     return <p>{treatment.treatmentName}</p>;
                   })}
+              {edit &&
+              addTreatmentList.length !== 0 &&
+              item.officeIndex === officeIndex
+                ? addTreatmentView()
+                : null}
+              <Button
+                type={"link"}
+                icon={<PlusOutlined />}
+                onClick={async () => {
+                  if (item.officeIndex !== officeIndex) {
+                    setAddTreatmentList([{ treatment: "" }]);
+                  } else {
+                    setAddTreatmentList([
+                      ...addTreatmentList,
+                      { treatment: "" },
+                    ]);
+                  }
+                  setOfficeIndex(item.officeIndex);
+                  setOfficeName(item.officeName);
+
+                  setEdit(true);
+                }}
+              />
             </Card>
           );
         })

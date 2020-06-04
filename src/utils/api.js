@@ -3,23 +3,28 @@
  */
 import axios from "axios";
 
+// prod server: https://ppodeum.site
+
 function rest(method) {
   return async (url, { body = {}, header = {}, token = "" } = {}) => {
     try {
       let response;
       if (method === "GET") {
-        response = await axios.get(`https://ppodeum.site${url}`, {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            "x-access-token": token,
-            ...header,
-          },
-        });
+        response = await axios.get(
+          `http://ec2-15-164-221-39.ap-northeast-2.compute.amazonaws.com${url}`,
+          {
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "x-access-token": token,
+              ...header,
+            },
+          }
+        );
       } else {
         response = await axios({
           method: method,
-          url: `https://ppodeum.site${url}`,
+          url: `http://ec2-15-164-221-39.ap-northeast-2.compute.amazonaws.com${url}`,
           data: body,
           headers: {
             Accept: "application/json",
