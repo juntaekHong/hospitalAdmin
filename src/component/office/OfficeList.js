@@ -340,6 +340,7 @@ const OfficeList = (props) => {
                   }
                   setOfficeIndex(item.officeIndex);
                   setOfficeName(item.officeName);
+                  await setTreatmentList(item.treatment);
 
                   setEdit(true);
                 }}
