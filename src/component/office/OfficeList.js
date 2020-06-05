@@ -56,6 +56,7 @@ const OfficeList = (props) => {
     notification.open(args);
   };
 
+  // 추가한 진료항목 값 입력 시 호출
   const onChanged = (data, searchIndex, value) => {
     let datas = [];
 
@@ -70,6 +71,7 @@ const OfficeList = (props) => {
     setAddTreatmentList(datas);
   };
 
+  // 추가한 진료항목 삭제 버튼 클릭 시, 호출
   const onClicked = (data, index) => {
     let currentList = [];
     data.map((item, cancelIndex) => {
