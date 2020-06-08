@@ -1,8 +1,24 @@
-import React, { useState, useEffect } from "react";
-import { Table, Input, InputNumber, Popconfirm, Form, Button } from "antd";
+import React, { useState, useEffect, cloneElement } from "react";
+import {
+  Table,
+  Input,
+  InputNumber,
+  Popconfirm,
+  Form,
+  Button,
+  Modal,
+} from "antd";
 import "../../styles/reservation/ReservationTable.css";
 import { ReservationActions } from "../../store/actionCreator";
-import { CheckCircleTwoTone, MinusCircleTwoTone } from "@ant-design/icons";
+import {
+  CheckCircleTwoTone,
+  MinusCircleTwoTone,
+  PlusCircleTwoTone,
+} from "@ant-design/icons";
+import { Link } from "react-router-dom";
+import reservation from "../../store/modules/reservation/reservation";
+
+const { TextArea } = Input;
 
 const originData = [];
 
@@ -405,9 +421,26 @@ export const EditableTable3 = ({ reservationList }) => {
   const [data, setData] = useState([]);
   const [editingKey, setEditingKey] = useState("");
 
+  // 진단서 작성&추가 모달
+  const [modal, setModal] = useState(false);
+  // 진단서 작성하는 예약 인덱스
+  const [reservationIndex, setReservationIndex] = useState();
+  // 진단서 작성 내용
+  const [prescription, setPrescription] = useState();
+  // 진단서 내용 작성
+  const [prescriptionValue, setPrescriptionValue] = useState("");
+
   useEffect(() => {
     setData(reservationList);
   }, [reservationList]);
+
+  useEffect(() => {
+    if (!modal) {
+      setPrescription("");
+      setPrescriptionValue("");
+      setReservationIndex();
+    }
+  }, [modal]);
 
   const isEditing = (record) => record.key === editingKey;
 
@@ -445,6 +478,7 @@ export const EditableTable3 = ({ reservationList }) => {
       dataIndex: "userName",
       width: "15%",
       editable: false,
+      render: (text) => <Link to={"/reservationList/nav6"}>{text}</Link>,
     },
     {
       title: "나이",
@@ -495,6 +529,22 @@ export const EditableTable3 = ({ reservationList }) => {
         const editable = isEditing(record);
         return editable ? (
           <span>
+            {record.status === "진료 완료" ? (
+              <Button
+                type={"link"}
+                icon={<PlusCircleTwoTone twoToneColor={"#52c41a"} />}
+                onClick={async () => {
+                  const comment = await ReservationActions.getPrescription(
+                    record.reservationIndex
+                  );
+                  await setPrescription(comment);
+                  await setReservationIndex(record.reservationIndex);
+
+                  console.log(record.status);
+                  await setModal(!modal);
+                }}
+              />
+            ) : null}
             <Popconfirm
               title="정말 삭제하시겠습니까?"
               onConfirm={async () => {
@@ -525,7 +575,7 @@ export const EditableTable3 = ({ reservationList }) => {
       ...col,
       onCell: (record) => ({
         record,
-        inputType: col.dataIndex === "age" ? "number" : "text",
+        inputType: col.dataIndex === "userName" ? "number" : "text",
         dataIndex: col.dataIndex,
         title: col.title,
         editing: isEditing(record),
@@ -534,6 +584,32 @@ export const EditableTable3 = ({ reservationList }) => {
   });
   return (
     <Form form={form} component={false}>
+      <Modal
+        title="진단서"
+        visible={modal}
+        onOk={async () => {
+          let data = { diagnosis: prescriptionValue };
+
+          await ReservationActions.commentOnReservation(reservationIndex, data);
+
+          await setModal(false);
+        }}
+        onCancel={() => {
+          setModal(false);
+        }}
+      >
+        {prescription !== null ? (
+          <p>{prescription}</p>
+        ) : (
+          <TextArea
+            rows={4}
+            value={prescriptionValue}
+            onChange={(e) => {
+              setPrescriptionValue(e.target.value);
+            }}
+          />
+        )}
+      </Modal>
       <Table
         components={{
           body: {
@@ -546,6 +622,13 @@ export const EditableTable3 = ({ reservationList }) => {
         rowClassName="editable-row"
         pagination={{
           onChange: cancel,
+        }}
+        onRow={(record) => {
+          return {
+            onClick: (event) => {
+              ReservationActions.getCommentOnReservation(record.userIndex);
+            },
+          };
         }}
       />
     </Form>

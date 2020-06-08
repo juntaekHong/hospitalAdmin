@@ -17,6 +17,8 @@ import { removeData, getData } from "../../utils/util";
 import { connect } from "react-redux";
 import OfficeList from "../office/OfficeList";
 import OfficeRegister from "../office/OfficeRegister";
+import PrescriptionCard from "../prescription/PrescriptionCard";
+import PrescriptionDetail from "../prescription/PrescriptionDetail";
 
 const { SubMenu } = Menu;
 const { Header, Content, Sider } = Layout;
@@ -135,6 +137,13 @@ const Reservation = (props) => {
                 </Route>
                 <Route path="/reservationList/nav5">
                   <OfficeRegister />
+                </Route>
+                {/* 유저 진단서 페이지 */}
+                <Route path="/reservationList/nav6">
+                  <PrescriptionCard />
+                </Route>
+                <Route path="/reservationList/nav7">
+                  <PrescriptionDetail />
                 </Route>
               </Switch>
             </Content>
