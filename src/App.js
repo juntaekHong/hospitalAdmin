@@ -34,7 +34,7 @@ const App = (props) => {
         <main children={comp} token={token} />
       )} */}
       <Switch>
-        <Route exact path="/">
+        <Route exact path="/manager">
           {props.access_token !== null ? (
             <Redirect to="/reservationList" />
           ) : (
