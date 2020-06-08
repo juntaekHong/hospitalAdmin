@@ -16,8 +16,9 @@ WORKDIR /react_app
 ADD ./ /react_app
 
 #패키지파일들 받기
-RUN npm install
-RUN npm i @types/node
+    RUN npm install
+    RUN npm install react-scripts@3.4.1 -g
+
 
 #배포버젼으로 설정 - 이 설정으로 환경을 나눌 수 있습니다.
 ENV NODE_ENV=production

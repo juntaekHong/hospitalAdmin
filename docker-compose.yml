@@ -1,4 +1,4 @@
-version: '4'
+version: '3'
 services:
 
   app:
@@ -7,3 +7,4 @@ services:
     ports:
       - "80:3000"
     restart: always
+    stdin_open: true
