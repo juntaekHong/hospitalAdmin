@@ -469,7 +469,7 @@ export const EditableTable3 = ({ reservationList }) => {
   const columns = [
     {
       title: "번호",
-      dataIndex: "reservationIndex",
+      dataIndex: "order",
       width: "10%",
       editable: false,
     },
