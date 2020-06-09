@@ -11,7 +11,7 @@ function rest(method) {
       let response;
       if (method === "GET") {
         response = await axios.get(
-          `http://ec2-15-164-221-39.ap-northeast-2.compute.amazonaws.com${url}`,
+          `https://ppodeum.site${url}`,
           {
             headers: {
               Accept: "application/json",
@@ -24,7 +24,7 @@ function rest(method) {
       } else {
         response = await axios({
           method: method,
-          url: `http://ec2-15-164-221-39.ap-northeast-2.compute.amazonaws.com${url}`,
+          url: `https://ppodeum.site${url}`,
           data: body,
           headers: {
             Accept: "application/json",
