@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import { Switch, Route, Redirect } from "react-router-dom";
 import "./index.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
@@ -11,7 +12,14 @@ ReactDOM.render(
   <Provider store={store}>
     <React.StrictMode>
       <BrowserRouter>
-        <App />
+        <Switch>
+          <Route exact path="/">
+            <Redirect to="/manager" />
+          </Route>
+          <Route>
+            <App exact path="/manager" />
+          </Route>
+        </Switch>
       </BrowserRouter>
     </React.StrictMode>
   </Provider>,

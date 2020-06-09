@@ -38,8 +38,9 @@ export const getWaitingReservations = () => async (dispatch) => {
       const result = jsonData.result;
       const dataFormat = [];
 
-      await result.rows.map((item) => {
+      await result.rows.map((item, index) => {
         dataFormat.push({
+          order: index + 1,
           reservationIndex: item.reservationIndex,
           createdAt: item.createdAt,
           userIndex: item.userIndex,
@@ -111,8 +112,9 @@ export const getAcceptedReservations = () => async (dispatch) => {
       const result = jsonData.result;
       const dataFormat = [];
 
-      await result.rows.map((item) => {
+      await result.rows.map((item, index) => {
         dataFormat.push({
+          order: index + 1,
           reservationIndex: item.reservationIndex,
           createdAt: item.createdAt,
           userIndex: item.userIndex,
