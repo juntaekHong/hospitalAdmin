@@ -123,7 +123,10 @@ const SignUp = (props) => {
       const promise1 = props.hpIdList.map((item) => {
         view.push(
           <div>
-            <button
+            <Button
+              type={"primary"}
+              shape={"round"}
+              style={{ marginBottom: 10 }}
               onClick={async () => {
                 await setHospitalId(item.hpid);
                 await setHospitalName(item.hospitalName);
@@ -132,7 +135,7 @@ const SignUp = (props) => {
               }}
             >
               {item.hospitalName}
-            </button>
+            </Button>
           </div>
         );
       });
