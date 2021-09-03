@@ -11,7 +11,7 @@
     "axios": "^0.19.2",
     "cors": "^2.8.5",
     "express": "^4.17.1",
-    "immer": "^6.0.9",
+    "immer": "^9.0.6",
     "ra-data-json-server": "^3.5.3",
     "react": "^16.13.1",
     "react-admin": "^3.5.3",
